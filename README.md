@@ -5,6 +5,7 @@ Principles of Big data Management Project
 The main objective of the project is to store, analyze and visualize the twitter's tweets( based on keyword tech/technologies,..).
 
 ### Phase 1 Report Wiki Link:
+https://github.com/sindhusha-t/twitter-data-analysis/wiki/Phase-1
 **Objective for Phase-1**
 1) Collect the tweets (around 100K tweets) from twitter using twitter streaming APIs.
 2) Extracting Hashtags and URLs from the tweets that are collected in the 1st task
