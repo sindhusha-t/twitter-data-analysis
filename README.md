@@ -19,6 +19,9 @@ Twitter_data: https://github.com/sindhusha-t/twitter-data-analysis/tree/master/P
 Output from hadoop: https://github.com/sindhusha-t/twitter-data-analysis/tree/master/Phase-1/hadoop_output    
 Output from scala: https://github.com/sindhusha-t/twitter-data-analysis/tree/master/Phase-1/Scala%20output   
 
+### Interim Project Report:
+https://github.com/sindhusha-t/twitter-data-analysis/wiki/Interim-project-report
+
 ### Phase 2 Report Wiki Link:
 
 ### Final Report Link:
