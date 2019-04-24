@@ -1,0 +1,13 @@
+import csv
+from operator import itemgetter
+reader = csv.reader(open("part-r-00000"), delimiter="\t")
+
+mreader = list(reader)
+
+l2 = []
+for i in range(len(mreader)):
+    l2.append( [mreader[i][0], int(mreader[i][1])] )
+
+for line in sorted(l2, key=itemgetter(1), reverse=True):
+    print(line)
+
