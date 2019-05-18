@@ -13,14 +13,7 @@ df = spark.read.json("/home/siri/Downloads/project/tech_tweets.json")
 #df.show()
 # Register the DataFrame as a SQL temporary view
 df.createOrReplaceTempView("Technology")
-sqlDF = spark.sql("SELECT COUNT(*) AS NumberOfTweets, 'HTML' as Language FROM Technology where text LIKE '%HTML%'\
-        UNION\
-        SELECT COUNT(*) AS NumberOfTweets,'Java' as Language FROM Technology where text LIKE '%java%'\
-        UNION\
-        SELECT COUNT(*) AS NumberOfTweets, 'python' as Language FROM Technology where text LIKE '%python%'\
-        UNION\
-        SELECT COUNT(*) AS NumberOfTweets, 'Angular' as Language FROM Technology where text LIKE '%angular%'\
-         ")
+sqlDF = spark.sql("SELECT COUNT(*) AS NumberOfTweets, 'HTML' as Language FROM Technology where text LIKE '%HTML%' UNION SELECT COUNT(*) AS NumberOfTweets,'Java' as Language FROM Technology where text LIKE '%java%' UNION SELECT COUNT(*) AS NumberOfTweets, 'python' as Language FROM Technology where text LIKE '%python%' UNION SELECT COUNT(*) AS NumberOfTweets, 'Angular' as Language FROM Technology where text LIKE '%angular%'")
 pd = sqlDF.toPandas()
 pd.to_csv('fourth.csv', index=False)
 pd.plot.pie(y='NumberOfTweets',labels=['HTML', 'Java', 'python', 'Angular'],figsize=(5,5))

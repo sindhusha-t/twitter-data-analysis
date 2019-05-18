@@ -1,0 +1,307 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Technology', 'tweets count'],
+            ['Artificial Intelligence', 446],
+            ['Internet Of Things', 198],
+            ['Machine Learning', 59],
+            ['Blockchain', 10]
+        ]);
+
+        var options = {
+          title: 'Different Technology trends'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('Query1'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <script>
+    google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBarColors);
+
+function drawBarColors() {
+      var data = google.visualization.arrayToDataTable([
+        ['Month', 'tweets count'],
+        ['Jan', 1297],
+        ['Feb', 1207],
+        ['Mar', 1101],
+          ['Apr', 1109],
+          ['May', 1054],
+          ['Jun', 1110],
+          ['Jul', 943],
+          ['Aug', 912],
+          ['Sep', 946],
+          ['Oct', 968],
+          ['Nov', 928],
+          ['Dec', 946]
+      ]);
+
+      var options = {
+        title: 'Monthly tweets on Technology',
+        chartArea: {width: '50%'},
+        colors: ['#b0120a', '#ffab91'],
+        hAxis: {
+          title: 'tweets count',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Month'
+        }
+      };
+      var chart = new google.visualization.BarChart(document.getElementById('Query2'));
+      chart.draw(data, options);
+    }
+    </script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['tech Language', 'Tweets count'],
+          ['Java', 45],
+            ['Python', 34],
+            ['Angular', 26],
+            ['HTML', 15],
+            ['JS', 8],
+        ]);
+
+        var options = {
+          title: 'Technology languages trend',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('Query3'));
+        chart.draw(data, options);
+      }
+    </script>
+    <script>
+        google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawBasic);
+
+function drawBasic() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Week Day', 'Tweets count'],
+        ['Sun', 3399],
+        ['Sat', 3277],
+        ['Fri', 4184],
+        ['Mon', 4218],
+        ['Tue', 4250],
+          ['Thu', 4397],
+          ['Wed', 4615]
+      ]);
+
+      var options = {
+        title: 'Week day wise stats',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Tweets count',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Week Day'
+        }
+      };
+
+      var chart = new google.visualization.BarChart(document.getElementById('Query4'));
+
+      chart.draw(data, options);
+    }
+    </script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Companies', 'Tweets count'],
+          ['IBM', 45],
+            ['Microsoft', 34],
+            ['Amazon', 26],
+            ['Apple', 15],
+            ['Google', 8],
+        ]);
+
+        var options = {
+          title: 'Popular Companies trend on technology',
+          pieHole: 0.4,
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('Query5'));
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ["language", "Tweets count", { role: "style" } ],
+        ["en", 21412, "#b87333"],
+        ["fr", 1886, "silver"],
+        ["es", 1677, "gold"],
+        ["ja", 1007, "color: #e5e4e2"]
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: "Popular speaking languages on technology",
+        width: 600,
+        height: 400,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.BarChart(document.getElementById("Query6"));
+      chart.draw(view, options);
+  }
+  </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['table']});
+      google.charts.setOnLoadCallback(drawTable);
+
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Username');
+        data.addColumn('number', 'Re tweets count');
+        data.addRows([
+          ['Abhishek',  {v: 61832, f: '61832'}],
+          ['TendenciasTech',   {v: 14819,   f: '14819'}],
+          ['SkyPree Marketing', {v: 12865, f: '12865'}],
+          ['Lauro Espinoza Creel',   {v: 11784,  f: '11784'}]
+        ]);
+
+        var table = new google.visualization.Table(document.getElementById('Query7'));
+
+        table.draw(data, {showRowNumber: true, width: '50%', height: '50%'});
+      }
+    </script>
+    <script>
+        google.charts.load('current', {packages: ['corechart', 'bar']});
+google.charts.setOnLoadCallback(drawAnnotations);
+
+function drawAnnotations() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['News Channels', 'Tweets count', {type: 'string', role: 'annotation'}],
+        ['TechCrunch', 20062110, '20.1M'],
+        ['hrtweets', 3792000, '3.8M'],
+        ['IndianExpress', 2695000, '2.7M'],
+        ['CNBC', 2099000, '2.1M'],
+        ['USATODAY', 1526000, '1.5M']
+      ]);
+
+      var options = {
+        title: 'NewsChannels actively tweeting on technology',
+        chartArea: {width: '50%'},
+        annotations: {
+          alwaysOutside: true,
+          textStyle: {
+            fontSize: 12,
+            auraColor: 'none',
+            color: '#555'
+          },
+          boxStyle: {
+            stroke: '#ccc',
+            strokeWidth: 1,
+            gradient: {
+              color1: '#f3e5f5',
+              color2: '#f3e5f5',
+              x1: '0%', y1: '0%',
+              x2: '100%', y2: '100%'
+            }
+          }
+        },
+        hAxis: {
+          title: 'Tweets count',
+          minValue: 0,
+        },
+        vAxis: {
+          title: 'News Channels'
+        }
+      };
+      var chart = new google.visualization.BarChart(document.getElementById('Query8'));
+      chart.draw(data, options);
+    }
+    </script>
+</head>
+<body>
+    <h1 align=center>Analysis on twitter tweets filtered based on technology</h1>
+    <br>
+    <br>
+    <div id="Query1"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <div id="Query2"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <div id="Query3"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    <div id="Query4"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    
+    <div id="Query5"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    
+    <div id="Query6"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    
+    <div id="Query7"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    
+    <div id="Query8"></div>
+    <br>
+    <br>
+    <hr>
+    <br>
+    <br>
+    
+    
+    <p>
+    <h3> Team Members: </h3>
+    Sindhusha Tiyyagura <br>
+    Pradeepika Kolluru<br>
+    Thoshita Movva<br>
+    </p>
+    </body>
+</html>

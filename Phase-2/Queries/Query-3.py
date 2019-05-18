@@ -1,4 +1,4 @@
-from pyspark.sql import SparkSession
+Amazonfrom pyspark.sql import SparkSession
 from pyspark.sql.functions import explode
 import matplotlib as plt
 import matplotlib.pyplot as plt
@@ -14,11 +14,7 @@ df = spark.read.json("/home/siri/Downloads/project/tech_tweets.json")
 # Register the DataFrame as a SQL temporary view
 df.createOrReplaceTempView("Technology")
 
-sqlDF = spark.sql("SELECT 'Microsoft' as Company, count(*) as Count from Technology where text like '%Microsoft%' and (text like '%AI%' or text like '%IoT%' or text like '%ML%')\
-        UNION\
-        SELECT 'IBM' as Company, count(*) as Count from Technology where text like '%IBM%' and (text like '%AI%' or text like '%IoT%' or text like '%ML%')\
-        UNION\
-        SELECT 'Cerner' as Company, count(*) as Count from Technology where text like '%Cerner%' and (text like '%AI%' or text like '%IoT%' or text like '%ML%')")
+sqlDF = spark.sql("SELECT 'Microsoft' as Company, count(*) as Count from Technology where text like '%Microsoft%' and (text like '%AI%' or text like '%IoT%' or text like '%ML%') UNION SELECT 'IBM' as Company, count(*) as Count from Technology where text like '%IBM%' and (text like '%AI%' or text like '%IoT%' or text like '%ML%') UNION SELECT 'Amazon' as Company, count(*) as Count from Technology where text like '%Cerner%' and (text like '%AI%' or text like '%IoT%' or text like '%ML%')")
         
 pd = sqlDF.toPandas()
 pd.to_csv('third.csv', index=False)

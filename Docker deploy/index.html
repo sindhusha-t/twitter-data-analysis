@@ -1,0 +1,853 @@
+
+<!-- saved from url=(0070)https://www.katacoda.com/courses/docker/create-nginx-static-web-server -->
+<html class="wf-sourcecodepro-n4-active wf-franklingoturwtotbooregular-n4-active wf-opensans-n4-active wf-active"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Deploy Static HTML Website as Container | Docker | Katacoda</title>
+    <link rel="preload" as="style" href="./index_files/materialize.min.css">
+    <link rel="preload" as="style" href="./index_files/style2.css">
+    <link rel="preload" as="script" href="./index_files/jquery-2.1.1.min.js.download">
+    <link rel="preload" as="script" href="./index_files/materialize.min.js.download">
+    <link rel="preload" as="script" href="./index_files/application.js.download">
+    
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <link rel="canonical" href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server">
+    <script type="text/javascript" async="" src="./index_files/recaptcha__en.js.download"></script><script async="" src="./index_files/analytics.js.download"></script><script type="text/javascript" async="" src="./index_files/mixpanel-2.2.min.js.download"></script><script type="text/javascript">window._trackJs = { token: '97f1dd886918463ebc84d187024d5aad', application: 'katacoda' };</script>
+    <script type="text/javascript" src="./index_files/tracker.js.download"></script>
+    <script type="text/javascript" src="./index_files/webfont.js.download"></script>
+    <link rel="stylesheet" href="./index_files/css" media="all"><script type="text/javascript">
+      WebFont.load({
+        google: {
+          families: ['Open Sans', 'Source Code Pro']
+        },
+        custom: {
+          families: ['franklingoturwtotbooregular']
+        }
+      });
+    </script>
+    <link type="text/css" rel="stylesheet" href="./index_files/materialize.min.css" media="screen,projection">
+    <link type="text/css" rel="stylesheet" href="./index_files/fontawesome.min.css" media="screen,projection">
+    <link type="text/css" rel="stylesheet" href="./index_files/style2.css" media="screen,projection">
+    <meta name="description" content="Learn how to run a static HTML website using Nginx. Learn Step 1 - Create Dockerfile, Step 2 - Build Docker Image, Step 3 - Run, via free hands on training.">
+    <!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
+    for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="//cdn.mxpnl.com/libs/mixpanel-2.2.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
+    mixpanel.init("5574553b9aa0851a3c9fa0fc4cd101df");</script><!-- end Mixpanel -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-56533756-2', 'katacoda.com');
+      ga('send', 'pageview');
+    </script>
+    <meta property="og:image" content="https://www.katacoda.com/images/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="https://www.katacoda.com/images/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="https://www.katacoda.com/images/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="https://www.katacoda.com/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="https://www.katacoda.com/images/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="https://www.katacoda.com/images/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="https://www.katacoda.com/images/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="https://www.katacoda.com/images/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="https://www.katacoda.com/images/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://www.katacoda.com/images/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="https://www.katacoda.com/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://www.katacoda.com/images/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="https://www.katacoda.com/images/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="https://www.katacoda.com/images/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="https://www.katacoda.com/images/manifest.json">
+    <link rel="shortcut icon" href="https://www.katacoda.com/images/favicon.ico">
+    <meta name="msapplication-TileColor" content="#0176c0">
+    <meta name="msapplication-TileImage" content="/images/mstile-144x144.png">
+    <meta name="msapplication-config" content="/images/browserconfig.xml">
+    <meta name="theme-color" content="#0176c0">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@teamKatacoda">
+    <meta name="twitter:creator" content="@teamKatacoda">
+    <meta name="twitter:title" content="Deploy Static HTML Website as Container | Docker | Katacoda">
+    <meta name="twitter:description" content="Learn how to run a static HTML website using Nginx. Learn Step 1 - Create Dockerfile, Step 2 - Build Docker Image, Step 3 - Run, via free hands on training.">
+    <meta name="twitter:image" content="https://www.katacoda.com/images/twitter-card.png">
+    <meta property="og:url" content="/courses/docker/create-nginx-static-web-server">
+    <meta property="og:title" content="Deploy Static HTML Website as Container | Docker | Katacoda">
+    <meta property="og:description" content="Learn how to run a static HTML website using Nginx. Learn Step 1 - Create Dockerfile, Step 2 - Build Docker Image, Step 3 - Run, via free hands on training.">
+    <meta property="og:image" content="https://www.katacoda.com/images/apple-touch-icon-152x152.png">
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "name": "Katacoda",
+      "description": "Interactive Learning and Training Platform for Software Engineers",
+      "url": "https://www.katacoda.com",
+      "logo": "https://www.katacoda.com/images/logo-head.png",
+      "sameAs": [
+        "https://www.facebook.com/katacoda",
+        "https://twitter.com/teamKatacoda",
+        "https://github.com/katacoda"
+      ]
+    }
+    </script>
+    <link rel="preload" as="style" href="./index_files/vendor.css">
+    <link rel="preload" as="style" href="./index_files/tutorial-style.css">
+    <link rel="preload" as="style" href="./index_files/course-style.css">
+    <meta name="lastUpdated" content="">
+    <meta name="gitCommit" content="">
+    <link rel="stylesheet" href="./index_files/style.min.css">
+    <link type="text/css" rel="stylesheet" href="./index_files/vendor.css" media="screen,projection">
+    <link type="text/css" rel="stylesheet" href="./index_files/tutorial-style.css" media="screen,projection">
+    <link type="text/css" rel="stylesheet" href="./index_files/course-style.css" media="screen,projection">
+
+    <script type="text/javascript" src="./index_files/jquery-2.1.1.min.js.download"></script>
+    <script type="text/javascript" src="./index_files/jstree.min.js.download"></script>
+  <style id="ace_editor.css">.ace_editor {position: relative;overflow: hidden;font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;direction: ltr;text-align: left;-webkit-tap-highlight-color: rgba(0, 0, 0, 0);}.ace_scroller {position: absolute;overflow: hidden;top: 0;bottom: 0;background-color: inherit;-ms-user-select: none;-moz-user-select: none;-webkit-user-select: none;user-select: none;cursor: text;}.ace_content {position: absolute;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;min-width: 100%;}.ace_dragging .ace_scroller:before{position: absolute;top: 0;left: 0;right: 0;bottom: 0;content: '';background: rgba(250, 250, 250, 0.01);z-index: 1000;}.ace_dragging.ace_dark .ace_scroller:before{background: rgba(0, 0, 0, 0.01);}.ace_selecting, .ace_selecting * {cursor: text !important;}.ace_gutter {position: absolute;overflow : hidden;width: auto;top: 0;bottom: 0;left: 0;cursor: default;z-index: 4;-ms-user-select: none;-moz-user-select: none;-webkit-user-select: none;user-select: none;}.ace_gutter-active-line {position: absolute;left: 0;right: 0;}.ace_scroller.ace_scroll-left {box-shadow: 17px 0 16px -16px rgba(0, 0, 0, 0.4) inset;}.ace_gutter-cell {padding-left: 19px;padding-right: 6px;background-repeat: no-repeat;}.ace_gutter-cell.ace_error {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABOFBMVEX/////////QRswFAb/Ui4wFAYwFAYwFAaWGAfDRymzOSH/PxswFAb/SiUwFAYwFAbUPRvjQiDllog5HhHdRybsTi3/Tyv9Tir+Syj/UC3////XurebMBIwFAb/RSHbPx/gUzfdwL3kzMivKBAwFAbbvbnhPx66NhowFAYwFAaZJg8wFAaxKBDZurf/RB6mMxb/SCMwFAYwFAbxQB3+RB4wFAb/Qhy4Oh+4QifbNRcwFAYwFAYwFAb/QRzdNhgwFAYwFAbav7v/Uy7oaE68MBK5LxLewr/r2NXewLswFAaxJw4wFAbkPRy2PyYwFAaxKhLm1tMwFAazPiQwFAaUGAb/QBrfOx3bvrv/VC/maE4wFAbRPBq6MRO8Qynew8Dp2tjfwb0wFAbx6eju5+by6uns4uH9/f36+vr/GkHjAAAAYnRSTlMAGt+64rnWu/bo8eAA4InH3+DwoN7j4eLi4xP99Nfg4+b+/u9B/eDs1MD1mO7+4PHg2MXa347g7vDizMLN4eG+Pv7i5evs/v79yu7S3/DV7/498Yv24eH+4ufQ3Ozu/v7+y13sRqwAAADLSURBVHjaZc/XDsFgGIBhtDrshlitmk2IrbHFqL2pvXf/+78DPokj7+Fz9qpU/9UXJIlhmPaTaQ6QPaz0mm+5gwkgovcV6GZzd5JtCQwgsxoHOvJO15kleRLAnMgHFIESUEPmawB9ngmelTtipwwfASilxOLyiV5UVUyVAfbG0cCPHig+GBkzAENHS0AstVF6bacZIOzgLmxsHbt2OecNgJC83JERmePUYq8ARGkJx6XtFsdddBQgZE2nPR6CICZhawjA4Fb/chv+399kfR+MMMDGOQAAAABJRU5ErkJggg==");background-repeat: no-repeat;background-position: 2px center;}.ace_gutter-cell.ace_warning {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAmVBMVEX///8AAAD///8AAAAAAABPSzb/5sAAAAB/blH/73z/ulkAAAAAAAD85pkAAAAAAAACAgP/vGz/rkDerGbGrV7/pkQICAf////e0IsAAAD/oED/qTvhrnUAAAD/yHD/njcAAADuv2r/nz//oTj/p064oGf/zHAAAAA9Nir/tFIAAAD/tlTiuWf/tkIAAACynXEAAAAAAAAtIRW7zBpBAAAAM3RSTlMAABR1m7RXO8Ln31Z36zT+neXe5OzooRDfn+TZ4p3h2hTf4t3k3ucyrN1K5+Xaks52Sfs9CXgrAAAAjklEQVR42o3PbQ+CIBQFYEwboPhSYgoYunIqqLn6/z8uYdH8Vmdnu9vz4WwXgN/xTPRD2+sgOcZjsge/whXZgUaYYvT8QnuJaUrjrHUQreGczuEafQCO/SJTufTbroWsPgsllVhq3wJEk2jUSzX3CUEDJC84707djRc5MTAQxoLgupWRwW6UB5fS++NV8AbOZgnsC7BpEAAAAABJRU5ErkJggg==");background-position: 2px center;}.ace_gutter-cell.ace_info {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAAAAAA6mKC9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAJ0Uk5TAAB2k804AAAAPklEQVQY02NgIB68QuO3tiLznjAwpKTgNyDbMegwisCHZUETUZV0ZqOquBpXj2rtnpSJT1AEnnRmL2OgGgAAIKkRQap2htgAAAAASUVORK5CYII=");background-position: 2px center;}.ace_dark .ace_gutter-cell.ace_info {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAJFBMVEUAAAChoaGAgIAqKiq+vr6tra1ZWVmUlJSbm5s8PDxubm56enrdgzg3AAAAAXRSTlMAQObYZgAAAClJREFUeNpjYMAPdsMYHegyJZFQBlsUlMFVCWUYKkAZMxZAGdxlDMQBAG+TBP4B6RyJAAAAAElFTkSuQmCC");}.ace_scrollbar {position: absolute;right: 0;bottom: 0;z-index: 6;}.ace_scrollbar-inner {position: absolute;cursor: text;left: 0;top: 0;}.ace_scrollbar-v{overflow-x: hidden;overflow-y: scroll;top: 0;}.ace_scrollbar-h {overflow-x: scroll;overflow-y: hidden;left: 0;}.ace_print-margin {position: absolute;height: 100%;}.ace_text-input {position: absolute;z-index: 0;width: 0.5em;height: 1em;opacity: 0;background: transparent;-moz-appearance: none;appearance: none;border: none;resize: none;outline: none;overflow: hidden;font: inherit;padding: 0 1px;margin: 0 -1px;text-indent: -1em;-ms-user-select: text;-moz-user-select: text;-webkit-user-select: text;user-select: text;white-space: pre!important;}.ace_text-input.ace_composition {background: inherit;color: inherit;z-index: 1000;opacity: 1;text-indent: 0;}.ace_layer {z-index: 1;position: absolute;overflow: hidden;word-wrap: normal;white-space: pre;height: 100%;width: 100%;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;pointer-events: none;}.ace_gutter-layer {position: relative;width: auto;text-align: right;pointer-events: auto;}.ace_text-layer {font: inherit !important;}.ace_cjk {display: inline-block;text-align: center;}.ace_cursor-layer {z-index: 4;}.ace_cursor {z-index: 4;position: absolute;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;border-left: 2px solid;transform: translatez(0);}.ace_multiselect .ace_cursor {border-left-width: 1px;}.ace_slim-cursors .ace_cursor {border-left-width: 1px;}.ace_overwrite-cursors .ace_cursor {border-left-width: 0;border-bottom: 1px solid;}.ace_hidden-cursors .ace_cursor {opacity: 0.2;}.ace_smooth-blinking .ace_cursor {-webkit-transition: opacity 0.18s;transition: opacity 0.18s;}.ace_marker-layer .ace_step, .ace_marker-layer .ace_stack {position: absolute;z-index: 3;}.ace_marker-layer .ace_selection {position: absolute;z-index: 5;}.ace_marker-layer .ace_bracket {position: absolute;z-index: 6;}.ace_marker-layer .ace_active-line {position: absolute;z-index: 2;}.ace_marker-layer .ace_selected-word {position: absolute;z-index: 4;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;}.ace_line .ace_fold {-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;display: inline-block;height: 11px;margin-top: -2px;vertical-align: middle;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAJCAYAAADU6McMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJpJREFUeNpi/P//PwOlgAXGYGRklAVSokD8GmjwY1wasKljQpYACtpCFeADcHVQfQyMQAwzwAZI3wJKvCLkfKBaMSClBlR7BOQikCFGQEErIH0VqkabiGCAqwUadAzZJRxQr/0gwiXIal8zQQPnNVTgJ1TdawL0T5gBIP1MUJNhBv2HKoQHHjqNrA4WO4zY0glyNKLT2KIfIMAAQsdgGiXvgnYAAAAASUVORK5CYII="),url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA3CAYAAADNNiA5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACJJREFUeNpi+P//fxgTAwPDBxDxD078RSX+YeEyDFMCIMAAI3INmXiwf2YAAAAASUVORK5CYII=");background-repeat: no-repeat, repeat-x;background-position: center center, top left;color: transparent;border: 1px solid black;border-radius: 2px;cursor: pointer;pointer-events: auto;}.ace_dark .ace_fold {}.ace_fold:hover{background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAAJCAYAAADU6McMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAJpJREFUeNpi/P//PwOlgAXGYGRklAVSokD8GmjwY1wasKljQpYACtpCFeADcHVQfQyMQAwzwAZI3wJKvCLkfKBaMSClBlR7BOQikCFGQEErIH0VqkabiGCAqwUadAzZJRxQr/0gwiXIal8zQQPnNVTgJ1TdawL0T5gBIP1MUJNhBv2HKoQHHjqNrA4WO4zY0glyNKLT2KIfIMAAQsdgGiXvgnYAAAAASUVORK5CYII="),url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA3CAYAAADNNiA5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACBJREFUeNpi+P//fz4TAwPDZxDxD5X4i5fLMEwJgAADAEPVDbjNw87ZAAAAAElFTkSuQmCC");}.ace_tooltip {background-color: #FFF;background-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.1));background-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.1));border: 1px solid gray;border-radius: 1px;box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);color: black;max-width: 100%;padding: 3px 4px;position: fixed;z-index: 999999;-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;cursor: default;white-space: pre;word-wrap: break-word;line-height: normal;font-style: normal;font-weight: normal;letter-spacing: normal;pointer-events: none;}.ace_folding-enabled > .ace_gutter-cell {padding-right: 13px;}.ace_fold-widget {-moz-box-sizing: border-box;-webkit-box-sizing: border-box;box-sizing: border-box;margin: 0 -12px 0 1px;display: none;width: 11px;vertical-align: top;background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAANElEQVR42mWKsQ0AMAzC8ixLlrzQjzmBiEjp0A6WwBCSPgKAXoLkqSot7nN3yMwR7pZ32NzpKkVoDBUxKAAAAABJRU5ErkJggg==");background-repeat: no-repeat;background-position: center;border-radius: 3px;border: 1px solid transparent;cursor: pointer;}.ace_folding-enabled .ace_fold-widget {display: inline-block;   }.ace_fold-widget.ace_end {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAANElEQVR42m3HwQkAMAhD0YzsRchFKI7sAikeWkrxwScEB0nh5e7KTPWimZki4tYfVbX+MNl4pyZXejUO1QAAAABJRU5ErkJggg==");}.ace_fold-widget.ace_closed {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAGCAYAAAAG5SQMAAAAOUlEQVR42jXKwQkAMAgDwKwqKD4EwQ26sSOkVWjgIIHAzPiCgaqiqnJHZnKICBERHN194O5b9vbLuAVRL+l0YWnZAAAAAElFTkSuQmCCXA==");}.ace_fold-widget:hover {border: 1px solid rgba(0, 0, 0, 0.3);background-color: rgba(255, 255, 255, 0.2);box-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);}.ace_fold-widget:active {border: 1px solid rgba(0, 0, 0, 0.4);background-color: rgba(0, 0, 0, 0.05);box-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);}.ace_dark .ace_fold-widget {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHklEQVQIW2P4//8/AzoGEQ7oGCaLLAhWiSwB146BAQCSTPYocqT0AAAAAElFTkSuQmCC");}.ace_dark .ace_fold-widget.ace_end {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAH0lEQVQIW2P4//8/AxQ7wNjIAjDMgC4AxjCVKBirIAAF0kz2rlhxpAAAAABJRU5ErkJggg==");}.ace_dark .ace_fold-widget.ace_closed {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAFCAYAAACAcVaiAAAAHElEQVQIW2P4//+/AxAzgDADlOOAznHAKgPWAwARji8UIDTfQQAAAABJRU5ErkJggg==");}.ace_dark .ace_fold-widget:hover {box-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);background-color: rgba(255, 255, 255, 0.1);}.ace_dark .ace_fold-widget:active {box-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);}.ace_fold-widget.ace_invalid {background-color: #FFB4B4;border-color: #DE5555;}.ace_fade-fold-widgets .ace_fold-widget {-webkit-transition: opacity 0.4s ease 0.05s;transition: opacity 0.4s ease 0.05s;opacity: 0;}.ace_fade-fold-widgets:hover .ace_fold-widget {-webkit-transition: opacity 0.05s ease 0.05s;transition: opacity 0.05s ease 0.05s;opacity:1;}.ace_underline {text-decoration: underline;}.ace_bold {font-weight: bold;}.ace_nobold .ace_bold {font-weight: normal;}.ace_italic {font-style: italic;}.ace_error-marker {background-color: rgba(255, 0, 0,0.2);position: absolute;z-index: 9;}.ace_highlight-marker {background-color: rgba(255, 255, 0,0.2);position: absolute;z-index: 8;}.ace_br1 {border-top-left-radius    : 3px;}.ace_br2 {border-top-right-radius   : 3px;}.ace_br3 {border-top-left-radius    : 3px; border-top-right-radius:    3px;}.ace_br4 {border-bottom-right-radius: 3px;}.ace_br5 {border-top-left-radius    : 3px; border-bottom-right-radius: 3px;}.ace_br6 {border-top-right-radius   : 3px; border-bottom-right-radius: 3px;}.ace_br7 {border-top-left-radius    : 3px; border-top-right-radius:    3px; border-bottom-right-radius: 3px;}.ace_br8 {border-bottom-left-radius : 3px;}.ace_br9 {border-top-left-radius    : 3px; border-bottom-left-radius:  3px;}.ace_br10{border-top-right-radius   : 3px; border-bottom-left-radius:  3px;}.ace_br11{border-top-left-radius    : 3px; border-top-right-radius:    3px; border-bottom-left-radius:  3px;}.ace_br12{border-bottom-right-radius: 3px; border-bottom-left-radius:  3px;}.ace_br13{border-top-left-radius    : 3px; border-bottom-right-radius: 3px; border-bottom-left-radius:  3px;}.ace_br14{border-top-right-radius   : 3px; border-bottom-right-radius: 3px; border-bottom-left-radius:  3px;}.ace_br15{border-top-left-radius    : 3px; border-top-right-radius:    3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}.ace_text-input-ios {position: absolute !important;top: -100000px !important;left: -100000px !important;}
+/*# sourceURL=ace/css/ace_editor.css */</style><style id="ace-tm">.ace-tm .ace_gutter {background: #f0f0f0;color: #333;}.ace-tm .ace_print-margin {width: 1px;background: #e8e8e8;}.ace-tm .ace_fold {background-color: #6B72E6;}.ace-tm {background-color: #FFFFFF;color: black;}.ace-tm .ace_cursor {color: black;}.ace-tm .ace_invisible {color: rgb(191, 191, 191);}.ace-tm .ace_storage,.ace-tm .ace_keyword {color: blue;}.ace-tm .ace_constant {color: rgb(197, 6, 11);}.ace-tm .ace_constant.ace_buildin {color: rgb(88, 72, 246);}.ace-tm .ace_constant.ace_language {color: rgb(88, 92, 246);}.ace-tm .ace_constant.ace_library {color: rgb(6, 150, 14);}.ace-tm .ace_invalid {background-color: rgba(255, 0, 0, 0.1);color: red;}.ace-tm .ace_support.ace_function {color: rgb(60, 76, 114);}.ace-tm .ace_support.ace_constant {color: rgb(6, 150, 14);}.ace-tm .ace_support.ace_type,.ace-tm .ace_support.ace_class {color: rgb(109, 121, 222);}.ace-tm .ace_keyword.ace_operator {color: rgb(104, 118, 135);}.ace-tm .ace_string {color: rgb(3, 106, 7);}.ace-tm .ace_comment {color: rgb(76, 136, 107);}.ace-tm .ace_comment.ace_doc {color: rgb(0, 102, 255);}.ace-tm .ace_comment.ace_doc.ace_tag {color: rgb(128, 159, 191);}.ace-tm .ace_constant.ace_numeric {color: rgb(0, 0, 205);}.ace-tm .ace_variable {color: rgb(49, 132, 149);}.ace-tm .ace_xml-pe {color: rgb(104, 104, 91);}.ace-tm .ace_entity.ace_name.ace_function {color: #0000A2;}.ace-tm .ace_heading {color: rgb(12, 7, 255);}.ace-tm .ace_list {color:rgb(185, 6, 144);}.ace-tm .ace_meta.ace_tag {color:rgb(0, 22, 142);}.ace-tm .ace_string.ace_regex {color: rgb(255, 0, 0)}.ace-tm .ace_marker-layer .ace_selection {background: rgb(181, 213, 255);}.ace-tm.ace_multiselect .ace_selection.ace_start {box-shadow: 0 0 3px 0px white;}.ace-tm .ace_marker-layer .ace_step {background: rgb(252, 255, 0);}.ace-tm .ace_marker-layer .ace_stack {background: rgb(164, 229, 101);}.ace-tm .ace_marker-layer .ace_bracket {margin: -1px 0 0 -1px;border: 1px solid rgb(192, 192, 192);}.ace-tm .ace_marker-layer .ace_active-line {background: rgba(0, 0, 0, 0.07);}.ace-tm .ace_gutter-active-line {background-color : #dcdcdc;}.ace-tm .ace_marker-layer .ace_selected-word {background: rgb(250, 250, 255);border: 1px solid rgb(200, 200, 250);}.ace-tm .ace_indent-guide {background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;}
+/*# sourceURL=ace/css/ace-tm */</style><style>    .error_widget_wrapper {        background: inherit;        color: inherit;        border:none    }    .error_widget {        border-top: solid 2px;        border-bottom: solid 2px;        margin: 5px 0;        padding: 10px 40px;        white-space: pre-wrap;    }    .error_widget.ace_error, .error_widget_arrow.ace_error{        border-color: #ff5a5a    }    .error_widget.ace_warning, .error_widget_arrow.ace_warning{        border-color: #F1D817    }    .error_widget.ace_info, .error_widget_arrow.ace_info{        border-color: #5a5a5a    }    .error_widget.ace_ok, .error_widget_arrow.ace_ok{        border-color: #5aaa5a    }    .error_widget_arrow {        position: absolute;        border: solid 5px;        border-top-color: transparent!important;        border-right-color: transparent!important;        border-left-color: transparent!important;        top: -5px;    }</style><script src="./index_files/theme-chrome.js.download"></script><script src="./index_files/mode-dockerfile.js.download"></script><style id="ace-chrome">.ace-chrome .ace_gutter {background: #ebebeb;color: #333;overflow : hidden;}.ace-chrome .ace_print-margin {width: 1px;background: #e8e8e8;}.ace-chrome {background-color: #FFFFFF;color: black;}.ace-chrome .ace_cursor {color: black;}.ace-chrome .ace_invisible {color: rgb(191, 191, 191);}.ace-chrome .ace_constant.ace_buildin {color: rgb(88, 72, 246);}.ace-chrome .ace_constant.ace_language {color: rgb(88, 92, 246);}.ace-chrome .ace_constant.ace_library {color: rgb(6, 150, 14);}.ace-chrome .ace_invalid {background-color: rgb(153, 0, 0);color: white;}.ace-chrome .ace_fold {}.ace-chrome .ace_support.ace_function {color: rgb(60, 76, 114);}.ace-chrome .ace_support.ace_constant {color: rgb(6, 150, 14);}.ace-chrome .ace_support.ace_type,.ace-chrome .ace_support.ace_class.ace-chrome .ace_support.ace_other {color: rgb(109, 121, 222);}.ace-chrome .ace_variable.ace_parameter {font-style:italic;color:#FD971F;}.ace-chrome .ace_keyword.ace_operator {color: rgb(104, 118, 135);}.ace-chrome .ace_comment {color: #236e24;}.ace-chrome .ace_comment.ace_doc {color: #236e24;}.ace-chrome .ace_comment.ace_doc.ace_tag {color: #236e24;}.ace-chrome .ace_constant.ace_numeric {color: rgb(0, 0, 205);}.ace-chrome .ace_variable {color: rgb(49, 132, 149);}.ace-chrome .ace_xml-pe {color: rgb(104, 104, 91);}.ace-chrome .ace_entity.ace_name.ace_function {color: #0000A2;}.ace-chrome .ace_heading {color: rgb(12, 7, 255);}.ace-chrome .ace_list {color:rgb(185, 6, 144);}.ace-chrome .ace_marker-layer .ace_selection {background: rgb(181, 213, 255);}.ace-chrome .ace_marker-layer .ace_step {background: rgb(252, 255, 0);}.ace-chrome .ace_marker-layer .ace_stack {background: rgb(164, 229, 101);}.ace-chrome .ace_marker-layer .ace_bracket {margin: -1px 0 0 -1px;border: 1px solid rgb(192, 192, 192);}.ace-chrome .ace_marker-layer .ace_active-line {background: rgba(0, 0, 0, 0.07);}.ace-chrome .ace_gutter-active-line {background-color : #dcdcdc;}.ace-chrome .ace_marker-layer .ace_selected-word {background: rgb(250, 250, 255);border: 1px solid rgb(200, 200, 250);}.ace-chrome .ace_storage,.ace-chrome .ace_keyword,.ace-chrome .ace_meta.ace_tag {color: rgb(147, 15, 128);}.ace-chrome .ace_string.ace_regex {color: rgb(255, 0, 0)}.ace-chrome .ace_string {color: #1A1AA6;}.ace-chrome .ace_entity.ace_other.ace_attribute-name {color: #994409;}.ace-chrome .ace_indent-guide {background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==") right repeat-y;}
+/*# sourceURL=ace/css/ace-chrome */</style></head>
+
+  <body class="row" style="margin-bottom: 0;height: 100%;">
+    <div id="confirmation-top"></div>
+
+
+    <section class="course-container">
+    
+  <section id="intro" class="col no-padding m9 s12 z-depth-1  hidden" data-course-data="alias ssh=&quot;ssh -oBatchMode=yes -o TCPKeepAlive=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=30 -o ConnectTimeout=30 -o ConnectionAttempts=30 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error&quot;
+  alias scp=&quot;scp -oBatchMode=yes -o TCPKeepAlive=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=30 -o ConnectTimeout=30 -o ConnectionAttempts=30 -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o LogLevel=error&quot;
+  echo &amp;#39;&amp;lt;h1&amp;gt;Hello World&amp;lt;/h1&amp;gt;&amp;#39; &amp;gt;&amp;gt; index.html \ndocker pull nginx:alpine \n \n" data-code="" style="left: -1025px;">
+    <div class="header banner">
+      
+      <h1 class="header center-on-small-only">Welcome!</h1>
+      <h4 class="light center-on-small-only">Deploy Static HTML Website as Container</h4>
+    </div>
+    <div class="row no-margin">
+      <div class="col s12">
+  
+        <div id="course-details" class="row">
+            <div class="col s12 m6">
+              <i class="fa fa-star"></i>
+              <span class="key">Difficulty:</span>
+              <span class="value">beginner</span>
+            </div>
+            <div class="col s12 m6">
+              <i class="fa fa-clock"></i>
+              <span class="key">Estimated Time:</span>
+              <span class="value">5-10 minutes</span>
+            </div>
+        </div>
+  
+        <p>In this scenario, you'll learn how to create a Docker Image for running a static HTML website using Nginx. The scenario will explain how to build a Docker Image running Nginx with your HTML site.</p>
+  <p>The aim is to help you understand how to create and run Docker Images created by yourself.</p>
+  
+  
+      </div>
+      <div class="col s12">
+        <div class="right">
+          <button id="hide-intro" class="btn primary-btn">Start Scenario</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="finished" class="col no-padding m9 s12 z-depth-1">
+      <div class="header banner">
+        <h1 class="header center-on-small-only">Congratulations!</h1>
+        <h4 class="light center-on-small-only">You've completed the scenario!</h4>
+        <i id="hide-finish" class="fa fa-times"></i>
+        <div id="rating">
+          <h6>Scenario Rating</h6>
+          <fieldset class="rating">
+            <input type="radio" id="star5" name="rating" value="5"><label class="full" for="star5" title="Awesome - 5 stars"></label>
+            <input type="radio" id="star4" name="rating" value="4"><label class="full" for="star4" title="Pretty Good - 4 stars"></label>
+            <input type="radio" id="star3" name="rating" value="3"><label class="full" for="star3" title="OK - 3 stars"></label>
+            <input type="radio" id="star2" name="rating" value="2"><label class="full" for="star2" title="Bad - 2 stars"></label>
+            <input type="radio" id="star1" name="rating" value="1"><label class="full" for="star1" title="Serious Problems - 1 star"></label>
+          </fieldset>
+        </div>
+      </div>
+      <div id="finished-content" class="row no-margin">
+        <div id="course-finished-text" class="col s12">
+          <p></p>
+              <div class="social-share row">
+                <div class=" col s4">
+                  <a class="social linkedin" rel="nofollow" target="_blank">
+                    <i class="fa fa-linkedin"></i>
+                    <div class="">Share Your Success</div>
+                  </a>
+                </div>
+                <div class="col s4">
+                  <a class="social twitter" rel="nofollow" target="_blank">
+                    <i class="fa fa-twitter"></i>
+                    <div class="">Share Your Success</div>
+                  </a>
+                </div>
+                <div class=" col s4">
+                  <a class="social facebook" rel="nofollow" target="_blank">
+                    <i class="fa fa-facebook"></i>
+                    <div class="">Share Your Success</div>
+                  </a>
+                </div>
+              </div>
+        </div>
+  
+        <div id="download-started" class="col s12 hidden">
+            <p>Your environment is currently being packaged as a Docker container and the download will begin shortly. To run the image locally, once Docker has been installed, use the commands</p>
+            <pre><code>cat scrapbook_docker_create-nginx-static-web-server_container.tar | docker load</code></pre>
+            <pre><code>docker run -it /docker_create-nginx-static-web-server:20190517</code></pre>
+        </div>
+        <div id="download-not-supported" class="col s12 hidden">
+          <p>Oops!! Sorry, it looks like this scenario doesn't currently support downloads. We'll fix that shortly.</p>
+        </div>
+        <div class="col s12" style="margin-top: 20px;">
+          <div class="col m6 s12">
+                &nbsp;
+                <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" id="reload" class="btn secondary-btn">Restart Scenario</a>
+          </div>
+          <div class="col m6 s12">
+            <div class="right">
+                    <a href="https://www.katacoda.com/courses/docker" id="next-tutorial" class="btn primary-btn">Next Scenario</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <section>
+    <nav>
+      <a href="https://www.katacoda.com/" id="logo" class="brand-logo">
+        <img src="./index_files/logo-white.png" alt="Katacoda Logo">
+        <h1>Katacoda <small>Interactive Learning and Training Platform for Software Engineers</small></h1>
+      </a>
+      <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" style="font-size: 150%;" data-target="nav-mobile" class="top-nav sidenav-trigger waves-effect waves-light circle hide-on-large-only">
+        <i class="fa fa-bars"></i>
+      </a>
+      <ul id="nav-mobile" class="sidenav sidenav-fixed hide-on-large-only" style="overflow: auto; transform: translateX(0px);">
+        <li><a href="https://www.katacoda.com/learn">Learn</a></li>
+        <li><a href="https://www.katacoda.com/create">Create</a></li>
+        <li><a href="https://www.katacoda.com/embed">Embed</a></li>
+        <li><a href="https://www.katacoda.com/embed">For Vendors</a></li>
+        <li><a href="https://www.katacoda.com/trainers">For Trainers</a></li>
+        <li><a href="https://www.katacoda.com/teams">For Teams</a></li>
+        <li><a href="https://www.katacoda.com/enterprise">For Enterprises</a></li>
+        <li><a href="https://www.katacoda.com/search">Search</a></li>
+          <li><a href="https://www.katacoda.com/login">Log In</a></li>
+          <li><a href="https://www.katacoda.com/signup">Sign Up</a></li>
+      </ul>
+      
+      <ul class="right hide-on-med-and-down">
+        <li><a class="course-header-only" href="https://www.katacoda.com/">Katacoda Overview &amp; Solutions</a></li>
+        <li><a class="hide-on-course" href="https://www.katacoda.com/learn">Learn</a></li>
+        <li><a class="hide-on-course" href="https://www.katacoda.com/create">Create</a></li>
+        <li><a class="hide-on-course" href="https://www.katacoda.com/embed">Embed</a></li>
+        <li><a class="hide-on-course" href="https://www.katacoda.com/embed"><span class="header-extra-text">For</span> Vendors</a></li>
+        <li><a class="hide-on-course" href="https://www.katacoda.com/trainers"><span class="header-extra-text">For</span> Trainers</a></li>
+        <li><a class="hide-on-course" href="https://www.katacoda.com/teams"><span class="header-extra-text">For</span> Teams</a></li>
+        <li><a class="hide-on-course" href="https://www.katacoda.com/enterprise"><span class="header-extra-text">For</span> Enterprises</a></li>
+        <li><a href="https://www.katacoda.com/search">Search</a></li>
+          <li><a href="https://www.katacoda.com/login">Log In</a></li>
+          <li><a href="https://www.katacoda.com/signup">Sign Up</a></li>
+      </ul>
+    </nav>
+<section id="tutorial" class="col m4 s12 side-tutorial" style="width: 470px;">
+  <div id="tutorial-resizer"></div>
+  <div id="tutorial-resized" class="hidden">
+    <img src="./index_files/do.png" alt="Interactive Labs">
+    <h3>Steps</h3>
+  </div>
+  <div id="course-title" class="">
+    <h3>
+      Deploy Static HTML Website as Container
+    </h3>
+  </div>
+<div id="step-progress" class="" data-steps="3">
+  <i class="fa fa-caret-left"></i>
+  <span id="step-progress-text"><span id="step-progress-name">Step</span> <span class="current">1</span> of <span class="total">3</span></span>
+  <i class="fa fa-caret-right"></i>
+</div>
+  <div id="step-1" class="step " data-id="1" data-code="" data-course-data="" data-verify="">
+      <h4>Step 1 - Create Dockerfile</h4>
+    <div class="content">
+      <p>Docker Images start from a base image. The base image should include the platform dependencies required by your application, for example, having the JVM or CLR installed.</p>
+<p>This base image is defined as an instruction in the Dockerfile. Docker Images are built based on the contents of a Dockerfile. The Dockerfile is a list of instructions describing how to deploy your application.</p>
+<p>In this example, our base image is the Alpine version of Nginx. This provides the configured web server on the Linux Alpine distribution.</p>
+<h2 id="task">Task</h2>
+<p>Create your <em>Dockerfile</em> for building your image by copying the contents below into the editor.</p>
+<pre class="file hljs dockerfile" data-filename="Dockerfile" data-target="replace"><span class="copyTo copyToEditor"><i class="fa fa-clipboard"></i><span class="hljs-keyword">Copy</span><span class="bash"> to Editor</span></span><span class="bash">FROM nginx:alpine
+</span><span class="hljs-keyword">COPY</span><span class="bash"> . /usr/share/nginx/html
+</span></pre>
+
+<p>The first line defines our base image. The second line copies the content of the current directory into a particular location inside the container.</p>
+
+    </div>
+
+    <div class="row">
+
+        <button class="col s12 l5 btn primary-btn next right" data-position="top" data-delay="50" data-tooltip="Please complete the task before proceeding">
+          Continue
+        </button>
+    </div>
+  </div>
+  <div id="step-2" class="step hidden" data-id="2" data-code="" data-course-data="" data-verify="">
+      <h4>Step 2 - Build Docker Image</h4>
+    <div class="content">
+      <p>The Dockerfile is used by the Docker CLI <em>build</em> command. The <em>build</em> command executes each instruction within the Dockerfile. The result is a built Docker Image that can be launched and run your configured app.</p>
+<p>The build command takes in some different parameters. The format is <em>docker build -t <friendly-image-name:version> &lt;build-directory&gt;</friendly-image-name:version></em>. The <em>-t</em> parameter allows you to specify a friendly name for the image and a tag, commonly used as a version number. This allows you to track built images and be confident about which version is being started.</p>
+<h2 id="task">Task</h2>
+<p>Build our static HTML image using the build command below.</p>
+<p><code class="execute" title="Run command">docker build -t webserver-image:v1 .</code></p>
+<p>You can view a list of all the images on the host using <code class="execute" title="Run command">docker images</code>.</p>
+<p>The built image will have the name <em>webserver-image</em> with a tag of <em>v1</em>.</p>
+
+    </div>
+
+    <div class="row">
+
+        <button class="col s12 l5 btn primary-btn next right" data-position="top" data-delay="50" data-tooltip="Please complete the task before proceeding">
+          Continue
+        </button>
+    </div>
+  </div>
+  <div id="step-3" class="step hidden" data-id="3" data-code="" data-course-data="" data-verify="">
+      <h4>Step 3 - Run</h4>
+    <div class="content">
+      <p>The built Image can be launched in a consistent way to other Docker Images. When a container launches, it's sandboxed from other processes and networks on the host. When starting a container you need to give it permission and access to what it requires.</p>
+<p>For example, to open and bind to a network port on the host you need to provide the parameter <em>-p &lt;host-port&gt;:&lt;container-port&gt;</em>.</p>
+<h2 id="task">Task</h2>
+<p>Launch our newly built image providing the friendly name and tag. As it's a web server, bind port 80 to our host using the <em>-p</em> parameter.</p>
+<p><code class="execute" title="Run command">docker run -d -p 80:80 webserver-image:v1</code></p>
+<p>Once started, you'll be able to access the results of port 80 via <code class="execute" title="Run command">curl docker</code></p>
+<p>To render the requests in the browser use the following links</p>
+<p><a href="https://2886795294-80-cykoria02.environments.katacoda.com/" rel="nofollow" target="_blank">https://2886795294-80-cykoria02.environments.katacoda.com/</a></p>
+<p>You now have a static HTML website being served by Nginx.</p>
+
+    </div>
+
+    <div class="row">
+
+          <button class="col s12 l5 btn primary-btn next right" data-position="top" data-delay="50" data-tooltip="Please complete the task before proceeding">
+            Continue
+          </button>
+    </div>
+  </div>
+</section>
+
+    <section id="split-host" class="col m8 s12 no-padding" style="width: 895px;">
+      <div class="split editor-split" style="height: 50%">
+        <div id="course_ide">
+          <link rel="stylesheet" href="./index_files/style.min.css">
+          <script src="./index_files/jstree.min.js.download"></script>
+          <section>
+            <section class="col s2 no-padding " id="jstree-container">
+              <div class="tabbar dropzone">
+                <div class="ktabs">
+                  <div class="ktab draggable kfilebrowsertab kfilebrowsertab-open">
+                    <i class="fa fa-folder-open tooltipped" title="Close Tree" data-position="bottom" data-tooltip="Close Tree" data-tooltip-id="0Iksn2fuR6WbZH2qh0"></i>
+                    <i class="fa fa-sync tooltipped" title="Refresh" data-position="bottom" data-tooltip="Refresh Tree" data-tooltip-id="AQKWWbXmPIELpTwAkH"></i>
+                    <i class="fa fa-angle-double-down tooltipped" title="Expand All" data-position="bottom" data-tooltip="Expand All" data-tooltip-id="qd9ZMR7MtQfHmYWYea"></i>
+                    <i class="fa fa-angle-double-up hidden tooltipped" title="Collapse All" data-position="bottom" data-tooltip="Collapse All" data-tooltip-id="UuqsMwvVGEaGohUwg0"></i>
+                  </div>
+                </div>
+              </div>
+              <div id="jstree" class="jstree jstree-2 jstree-default" role="tree" tabindex="0" aria-activedescendant="n-0" aria-busy="false"><ul class="jstree-container-ul jstree-children" role="group"><li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="n-root_anchor" aria-expanded="true" id="n-root" class="jstree-node  jstree-open jstree-last"><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" tabindex="-1" id="n-root_anchor"><i class="jstree-icon jstree-themeicon" role="presentation"></i>./</a><ul role="group" class="jstree-children"><li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="n-0_anchor" id="n-0" class="jstree-node  jstree-leaf jstree-last"><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" tabindex="-1" id="n-0_anchor"><i class="jstree-icon jstree-themeicon jstree-file jstree-themeicon-custom" role="presentation"></i>index.html</a></li></ul></li></ul></div>
+            </section>
+            <div class="col s10 no-padding" id="editor">
+              <div class="tabbar dropzone">
+                <div class="ktabs">
+                  <div class="ktab draggable kfilebrowsertab hidden kfilebrowsertab-closed">
+                    <i class="fa fa-folder"></i>
+                  </div>
+                    <div class="ktab draggable kfiletab" data-path="./Dockerfile" data-filename="Dockerfile" data-view-id="#file0">Dockerfile <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" class="tab-progress hidden"><i class="fa-li fa fa-spinner fa-spin"></i></a><a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" class="close-tab hidden"><i class="fa fa-times"></i></a></div>
+                <div class="ktab draggable  kfiletab active" data-path="./index.html" data-filename="index.html" data-view-id="#file1558118124648">index.html <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" class="tab-progress hidden"><i class="fa-li fa fa-spinner fa-spin"></i></a><a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#" class="close-tab"><i class="fa fa-times"></i></a></div></div>
+              </div>
+                <section id="file0" class="col s12 ace-editor ace_editor ace-chrome hidden" data-path="Dockerfile" data-filename="Dockerfile"><textarea class="ace_text-input" wrap="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="opacity: 0; height: 14px; width: 6.59781px; left: 44px; top: 28px;"></textarea><div class="ace_gutter" aria-hidden="true"><div class="ace_layer ace_gutter-layer ace_folding-enabled" style="margin-top: 0px; height: 293px; width: 40px;"><div class="ace_gutter-cell " style="height: 14px;">1</div><div class="ace_gutter-cell " style="height: 14px;">2</div><div class="ace_gutter-cell " style="height: 14px;">3</div></div><div class="ace_gutter-active-line" style="top: 28px; height: 14px;"></div></div><div class="ace_scroller" style="left: 40px; right: 0px; bottom: 0px;"><div class="ace_content" style="margin-top: 0px; width: 718px; height: 293px; margin-left: 0px;"><div class="ace_layer ace_print-margin-layer"><div class="ace_print-margin" style="left: 531.825px; visibility: hidden;"></div></div><div class="ace_layer ace_marker-layer"><div class="ace_active-line" style="height:14px;top:28px;left:0;right:0;"></div></div><div class="ace_layer ace_text-layer" style="padding: 0px 4px;"><div class="ace_line" style="height:14px"><span class="ace_comment"># This is your Editor pane. Write the Dockerfile here and </span></div><div class="ace_line" style="height:14px"><span class="ace_comment"># use the command line to execute commands</span></div><div class="ace_line" style="height:14px"></div></div><div class="ace_layer ace_marker-layer"></div><div class="ace_layer ace_cursor-layer ace_hidden-cursors"><div class="ace_cursor" style="left: 4px; top: 28px; width: 6.59781px; height: 14px;"></div></div></div></div><div class="ace_scrollbar ace_scrollbar-v" style="display: none; width: 22px; bottom: 0px;"><div class="ace_scrollbar-inner" style="width: 22px; height: 42px;"></div></div><div class="ace_scrollbar ace_scrollbar-h" style="display: none; height: 22px; left: 40px; right: 0px;"><div class="ace_scrollbar-inner" style="height: 22px; width: 718px;"></div></div><div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; font: inherit; overflow: hidden;"><div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; font: inherit; overflow: visible;"></div><div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; overflow: visible;">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</div></div></section>
+                
+            <section id="file1558118124648" class="col s12 ace-editor ace_editor ace-chrome" data-path="./index.html" data-filename="index.html"><textarea class="ace_text-input" wrap="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="opacity: 0; height: 14px; width: 6.59781px; left: 109.782px; top: 167px;"></textarea><div class="ace_gutter" aria-hidden="true"><div class="ace_layer ace_gutter-layer ace_folding-enabled" style="margin-top: -1px; height: 271px; width: 53px;"><div class="ace_gutter-cell " style="height: 14px;">220</div><div class="ace_gutter-cell " style="height: 14px;">221</div><div class="ace_gutter-cell " style="height: 14px;">222</div><div class="ace_gutter-cell " style="height: 14px;">223</div><div class="ace_gutter-cell " style="height: 14px;">224</div><div class="ace_gutter-cell " style="height: 14px;">225</div><div class="ace_gutter-cell " style="height: 14px;">226</div><div class="ace_gutter-cell " style="height: 14px;">227</div><div class="ace_gutter-cell " style="height: 14px;">228</div><div class="ace_gutter-cell " style="height: 14px;">229</div><div class="ace_gutter-cell " style="height: 14px;">230</div><div class="ace_gutter-cell " style="height: 14px;">231</div><div class="ace_gutter-cell " style="height: 14px;">232</div><div class="ace_gutter-cell " style="height: 14px;">233</div><div class="ace_gutter-cell " style="height: 14px;">234</div><div class="ace_gutter-cell " style="height: 14px;">235</div><div class="ace_gutter-cell " style="height: 14px;">236</div><div class="ace_gutter-cell " style="height: 14px;">237</div><div class="ace_gutter-cell " style="height: 14px;">238</div></div><div class="ace_gutter-active-line" style="top: 167px; height: 14px;"></div></div><div class="ace_scroller" style="left: 53px; right: 17px; bottom: 0px;"><div class="ace_content" style="margin-top: -1px; width: 675px; height: 271px; margin-left: 0px;"><div class="ace_layer ace_print-margin-layer"><div class="ace_print-margin" style="left: 531.825px; visibility: hidden;"></div></div><div class="ace_layer ace_marker-layer"><div class="ace_active-line" style="height:14px;top:168px;left:0;right:0;"></div></div><div class="ace_layer ace_text-layer" style="padding: 0px 4px;"><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  </div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;div id="Query8"&gt;&lt;/div&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;hr&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  </div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;div id="Query9"&gt;&lt;/div&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;hr&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;br&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  </div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;div id="Query10"&gt;&lt;/div&gt;</div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  </div><div class="ace_line" style="height:14px"><span class="ace_indent-guide">  </span>  &lt;/body&gt;</div><div class="ace_line" style="height:14px">&lt;/html&gt;</div></div><div class="ace_layer ace_marker-layer"></div><div class="ace_layer ace_cursor-layer ace_hidden-cursors"><div class="ace_cursor" style="left: 56.7825px; top: 168px; width: 6.59781px; height: 14px;"></div></div></div></div><div class="ace_scrollbar ace_scrollbar-v" style="width: 22px; bottom: 0px;"><div class="ace_scrollbar-inner" style="width: 22px; height: 3332px;"></div></div><div class="ace_scrollbar ace_scrollbar-h" style="display: none; height: 22px; left: 53px; right: 17px;"><div class="ace_scrollbar-inner" style="height: 22px; width: 705px;"></div></div><div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; font: inherit; overflow: hidden;"><div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; font: inherit; overflow: visible;"></div><div style="height: auto; width: auto; top: 0px; left: 0px; visibility: hidden; position: absolute; white-space: pre; font-style: inherit; font-variant: inherit; font-stretch: inherit; font-size: inherit; line-height: inherit; font-family: inherit; overflow: visible;">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</div></div></section>
+</div>
+          
+          </section>
+          <script>
+            var j = [
+                {
+                    id: 1, state: {opened: true },
+                    text: './',
+                    children: [
+                        { id: 'n0', icon: 'jstree-file', text: 'file' },
+                        {
+                            id: 'n1',
+                            text: 'test/',
+                            children: [
+                                {
+                                    id: 'n2',
+                                    text: 'test2/',
+                                    children: [
+                                        {
+                                            id: 'n3',
+                                            text: 'test3/',
+                                            children: []
+                                        }
+                                    ]
+                                },
+                                { id: 'n4', icon: 'jstree-file', text: 'file1' }
+                            ]
+                        }
+                    ]
+                }
+            ];
+          </script>
+        </div>
+      </div>
+      <div class="split" style="height: 50%;">
+        <div class="tabbar dropzone">
+          <div class="ktabs">
+              <div class="ktab draggable  active" data-view-id="terminal" data-port="" data-host="">Terminal <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server" class="close-tab hidden"><i class="fa fa-times"></i></a></div>
+                    <div class="ktab draggable new-window " data-view-id="80" data-port="80" data-host="" data-src="https://2886795294-80-cykoria02.environments.katacoda.com">docker:80 <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server" class="close-tab hidden"><i class="fa fa-times"></i></a></div>
+          </div>
+          <div class="controls">
+            <a class="dropdown-button tooltipped" data-target="webpreview-dropdown-terminal" data-position="left" data-delay="50" data-tooltip="Web Preview" data-tooltip-id="KaIouH92PdM0AsZepg">
+              <i class="fa fa-plus"></i>
+            </a><ul id="webpreview-dropdown-terminal" class="dropdown-content webpreview-dropdown" tabindex="0">
+          <li><a class="add-new-terminal" data-host="HOST1">Open New Terminal</a></li><li class="divider"></li><li><a href="https://2886795294-80-cykoria02.environments.katacoda.com/" target="_blank">View HTTP port 80 on Host 1</a></li><li><a href="https://2886795294-cykoria02.environments.katacoda.com/" target="_blank">Select port to view on Host 1</a></li><li class="divider"></li><li><a href="https://2886795305-80-cykoria02.environments.katacoda.com/" target="_blank">View HTTP port 80 on Client 1</a></li><li><a href="https://2886795305-cykoria02.environments.katacoda.com/" target="_blank">Select port to view on Client 1</a></li><li class="divider"></li></ul>
+            <div class="settings-link">
+              <a id="poweroff" class="hidden tooltipped" data-tooltip="Shutdown Cluster" data-tooltip-id="IjJkznffkozsbEGFX0">
+                <i class="fa fa-power-off white-text"></i>
+              </a>
+              <a id="report-problem" class="tooltipped" data-tooltip="Report Problem / Give Feedback" data-tooltip-id="xzuQC8SyQJAwb555gQ">
+                <i class="fa fa-bullhorn white-text"></i>
+              </a>
+              <a id="fullscreen" class="tooltipped" data-tooltip="Fullscreen" data-tooltip-id="WkTT331uA9P96KsQrW">
+                <i class="fa fa-expand-arrows-alt white-text"></i>
+              </a>
+              <a class="dropdown-button tooltipped" data-target="settings-dropdown-terminal" data-position="left" data-delay="50" data-tooltip="Settings" data-tooltip-id="JzRyz9IoL9GXy6NTNb">
+                <i class="fa fa-cog white-text"></i>
+              </a><ul id="settings-dropdown-terminal" class="dropdown-content settings-dropdown" tabindex="0">
+            <li tabindex="0"><a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server" id="presentation-mode">Presentation Mode <span class="tick">✔</span></a></li>
+            <li tabindex="0"><a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server" id="light-colour-schema">Light Color Scheme <span class="tick">✔</span></a></li>
+            <li tabindex="0"><a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server" id="debug">Debug</a></li>
+          </ul>
+            </div>
+          </div>
+          
+          
+          
+          
+        </div>
+        <section id="terminal" data-host="HOST1" class="terminal-container "><div class="terminal xterm xterm-theme-default xterm-cursor-style-block xterm-cursor-blink focus xterm-cursor-blink-on" tabindex="0"><div class="xterm-viewport" style="line-height: 22px; height: 528px;"><div class="xterm-scroll-area" style="height: 528px;"></div></div><div class="xterm-selection" style="height: 528px;"><div style="height: 22px; top: 110px; left: 206.25px; width: 0px;"></div><div style="top: 132px; left: 0px; width: 866.25px;"></div></div><div class="xterm-helpers"><textarea class="xterm-helper-textarea" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0"></textarea><div class="composition-view"></div><style>.xterm-wide-char{width:16.5px;}.xterm-normal-char{width:8.25px;}.xterm-rows > div{height:22px;}</style><span aria-hidden="true" style="position: absolute; top: 0px; left: -9999em;">W</span></div><div class="xterm-rows" style="line-height: 22px;"><div><span data-obj-id="27" class="xterm-color-2">Your&nbsp;Interactive&nbsp;Bash&nbsp;Terminal.&nbsp;A&nbsp;safe&nbsp;place&nbsp;to&nbsp;learn&nbsp;and&nbsp;execute&nbsp;commands.</span><span data-obj-id="29">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="28" class="">$&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="17" class="">$&nbsp;</span><span data-obj-id="15" class="reverse-video terminal-cursor">&nbsp;</span><span data-obj-id="16" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="18" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="19" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="20" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="21" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="22" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="23" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="24" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div><div><span data-obj-id="25" class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div></div></div></section>
+      </div>
+    </section>
+</section>
+
+<div id="help-modal" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h4>Help</h4>
+    <p>Katacoda offerings an Interactive Learning Environment for Developers. This course uses a command line and a pre-configured sandboxed environment for you to use. Below are useful commands when working with the environment.</p>
+    <table class="cmds">
+    	<tbody><tr><td class="cmd">cd &lt;directory&gt;</td><td>Change directory</td></tr>
+    	<tr><td class="cmd">ls</td><td>List directory</td></tr>
+      <tr><td class="cmd">echo 'contents' &gt; &lt;file&gt;</td><td>Write contents to a file</td></tr>
+      <tr><td class="cmd">cat &lt;file&gt;</td><td>Output contents of file</td></tr>
+    </tbody></table>
+
+    <h5>Vim</h5>
+    <p>In the case of certain exercises you will be required to edit files or text. The best approach is with Vim. Vim has two different modes, one for entering commands (Command Mode) and the other for entering text (Insert Mode). You need to switch between these two modes based on what you want to do. The basic commands are:</p>
+    <table class="cmds">
+    	<tbody><tr><td class="cmd">i</td><td>In Command Mode</td><td>Change into Insert Mode, you can now insert and edit text in the file</td></tr>
+    	<tr><td class="cmd">esc</td><td>In Insert Mode</td><td>Change into Command Mode, you can now execute commands</td></tr>
+    	<tr><td class="cmd">:wq</td><td>In Command Mode</td><td>Save and Exit</td></tr>
+    </tbody></table>
+  </div>
+  <div class="modal-footer right">
+    <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Got It</a>
+  </div>
+</div>
+
+  <script type="text/javascript" src="./index_files/socket.io.js.download"></script>
+  <script type="text/javascript" src="./index_files/term.js.download"></script>
+  <script type="text/javascript" src="./index_files/ace.js.download"></script>
+  <script type="text/javascript" src="./index_files/editor.js.download"></script>
+  <script type="text/javascript" src="./index_files/terminal-application.js.download"></script>
+  <script type="text/javascript" src="./index_files/editor-terminal-application.js.download"></script>
+  <script type="text/javascript" src="./index_files/sync-editor-to-container.js.download"></script>
+
+<script>
+  window.on_page_load = function() {
+    course = new CourseApplication();
+    course.init(window.app, {"paid":false}, {"id":"create-nginx-static-web-server","pathwayId":"docker","pathwayTitle":"Docker","authenticated":false,"title":"Deploy Static HTML Website as Container","files":["Dockerfile"],"environment":{"showdashboard":true,"dashboard":"docker:80","uilayout":"editor-terminal-v1","uisettings":"dockerfile","uimessage1":"\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n","uidependencies":["/socket.io/socket.io.js","/javascripts/term.js","/js/vendor/ace/ace.js","/js/editor.js","/javascripts/terminal-application.js","/javascripts/editor-terminal-application.js","/javascripts/sync-editor-to-container.js"]},"backend":{"dockerimage":"dind","port":80}});
+
+    course.view = new EditorTerminalTreeView();
+    course.view.init();
+  };
+</script>
+
+
+    <div id="registration-modal" class="katacoda-modal modal col m6 offset-m3 s10 offset-s1">
+      <div id="signup" class="">
+        <div id="auth-dialog" class="col s12 m7">
+          <form method="POST" action="https://www.katacoda.com/signup">
+            <input id="info" name="info" type="text">
+            <input name="redirect" type="hidden" value="">
+            <h2 class="">Welcome! Connect to start</h2>
+            <div class="social-logins row">
+              <div class=" col s6">
+                <a class="social github" href="https://www.katacoda.com/auth/github">
+                  <i class="fa fa-github"></i>
+                  <div class="">Sign Up with Github</div>
+                </a>
+              </div>
+              <div class=" col s6">
+                <a class="social linkedin" href="https://www.katacoda.com/auth/linkedin">
+                  <i class="fa fa-linkedin"></i>
+                  <div class="">Sign Up with Linkedin</div>
+                </a>
+              </div>
+              <div class="col s6">
+                <a class="social twitter" href="https://www.katacoda.com/auth/twitter">
+                  <i class="fa fa-twitter"></i>
+                  <div class="">Sign Up with Twitter</div>
+                </a>
+              </div>
+              <div class=" col s6">
+                <a class="social google" href="https://www.katacoda.com/auth/google">
+                  <i class="fa fa-google"></i>
+                  <div class="">Sign Up with Google</div>
+                </a>
+              </div>
+            </div>
+            <h2 class="">...or sign up using your email</h2>
+            <h2 class="hidden">Sign up using your email</h2>
+            <div class="form-contents">
+              <p class="error red-text center"></p>
+              <div class="">
+                <label for="email">Email Address</label>
+                <input id="email" name="email" type="text">
+              </div>
+              <div class="">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password">
+              </div>
+              <div class="actions">
+                <div class="g-recaptcha" data-sitekey="6LcucwsTAAAAAJh8SVEE98diMY2rE3cxP9PWu4a1"><div style="width: 304px; height: 78px;"><div><iframe src="./index_files/anchor.html" width="304" height="78" role="presentation" name="a-krn87rsbl8gq" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea></div></div>
+                <button type="submit" class="btn primary-btn">Sign Up For Free</button>
+                <a class="login" href="https://www.katacoda.com/login">Already have an account? Log it here</a>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div id="auth-why" class="col s12 m5">
+          <h2>You’ll love Katacoda</h2>
+          <div class="how-guides">
+            <div class="how-guide row">
+              <div class="col s4">
+                <img src="./index_files/guided.png" alt="Guided Learning Pathway">
+              </div>
+              <div class="col s8">
+                <h4>Guided Path</h4>
+                <p>
+                  Knowing what you need to know is the hardest part. Our guided pathways help build your knowledge around real-world scenarios.
+                </p>
+              </div>
+            </div>
+            <div class="how-guide row">
+              <div class="col s4">
+                <img src="./index_files/do.png" alt="Interactive Labs">
+              </div>
+              <div class="col s8">
+                <h4>Learn By Doing</h4>
+                <p>
+                  The best way to learn its by doing. All our tutorials are interactive with pre-configured live environments ready for you to use.
+                </p>
+              </div>
+            </div>
+            <div class="how-guide row">
+              <div class="col s4">
+                <img src="./index_files/done.png" alt="Stay up-to-date">
+              </div>
+              <div class="col s8">
+                <h4>Stay up-to-date</h4>
+                <p>
+                  It's a competitive industry. Your skills need to keep up with the latest approaches. Katacoda keeps your skills up-to-date.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="login" class="hidden">
+        <div id="auth-dialog" class="col s12 m7">
+          <form method="POST" action="https://www.katacoda.com/login">
+            <input name="redirect" type="hidden" value="">
+            <h2 class="">Welcome back! Connect to start</h2>
+            <div class="social-logins row">
+              <div class=" col s6">
+                <a class="social github" href="https://www.katacoda.com/auth/github">
+                  <i class="fa fa-github"></i>
+                  <div class="">Log In with Github</div>
+                </a>
+              </div>
+              <div class=" col s6">
+                <a class="social linkedin" href="https://www.katacoda.com/auth/linkedin">
+                  <i class="fa fa-linkedin"></i>
+                  <div class="">Log In with Linkedin</div>
+                </a>
+              </div>
+              <div class="col s6">
+                <a class="social twitter" href="https://www.katacoda.com/auth/twitter">
+                  <i class="fa fa-twitter"></i>
+                  <div class="">Log In with Twitter</div>
+                </a>
+              </div>
+              <div class=" col s6">
+                <a class="social google" href="https://www.katacoda.com/auth/google">
+                  <i class="fa fa-google"></i>
+                  <div class="">Log In with Google</div>
+                </a>
+              </div>
+            </div>
+            <h2 class="">...or log in using your email</h2>
+            <h2 class="hidden">Log in using your email</h2>
+            <div class="form-contents">
+              <p class="error red-text center"></p>
+              <div class="">
+                <label for="email">Email Address</label>
+                <input id="email" name="email" type="text">
+              </div>
+              <div class="">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password">
+              </div>
+              <div class="actions">
+                <button class="btn primary-btn">Login</button>
+                 <a class="forgot" href="https://www.katacoda.com/forgot">Forgot password?</a>
+                 <a class="signup right" href="https://www.katacoda.com/signup">Create a new account here.</a>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div id="auth-why" class="col s12 m5">
+          <h2>You’ll love Katacoda</h2>
+          <div class="how-guides">
+            <div class="how-guide row">
+              <div class="col s4">
+                <img src="./index_files/guided.png" alt="Guided Learning Pathway">
+              </div>
+              <div class="col s8">
+                <h4>Guided Path</h4>
+                <p>
+                  Knowing what you need to know is the hardest part. Our guided pathways help build your knowledge around real-world scenarios.
+                </p>
+              </div>
+            </div>
+            <div class="how-guide row">
+              <div class="col s4">
+                <img src="./index_files/do.png" alt="Interactive Labs">
+              </div>
+              <div class="col s8">
+                <h4>Learn By Doing</h4>
+                <p>
+                  The best way to learn its by doing. All our tutorials are interactive with pre-configured live environments ready for you to use.
+                </p>
+              </div>
+            </div>
+            <div class="how-guide row">
+              <div class="col s4">
+                <img src="./index_files/done.png" alt="Stay up-to-date">
+              </div>
+              <div class="col s8">
+                <h4>Stay up-to-date</h4>
+                <p>
+                  It's a competitive industry. Your skills need to keep up with the latest approaches. Katacoda keeps your skills up-to-date.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div id="restricted-modal" class="katacoda-modal modal col m6 offset-m3 s10 offset-s1">
+      <div id="signup" class="">
+        <div class="auth-dialog col s12">
+          <form method="POST" action="https://www.katacoda.com/auth/restricted">
+            <input id="info" name="info" type="text">
+            <input name="type" type="hidden" value="email">
+            <h2 class="">Welcome! Enter your email address to connect</h2>
+            <div class="form-contents">
+              <p class="error red-text center"></p>
+              <div class="">
+                <label for="email">Email Address</label>
+                <input id="email" name="email" type="text">
+              </div>
+              <div class="actions">
+                <div class="g-recaptcha" data-sitekey="6LcucwsTAAAAAJh8SVEE98diMY2rE3cxP9PWu4a1"><div style="width: 304px; height: 78px;"><div><iframe src="./index_files/anchor(1).html" width="304" height="78" role="presentation" name="a-e9urdco1q5ai" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div><textarea id="g-recaptcha-response-1" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea></div></div>
+                <button type="submit" class="btn primary-btn">Connect</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    
+    <script>
+      var modal_init = function() {
+        var context = $("#registration-modal");
+        var selectors = {
+          context: context,
+          login: $("#login", context),
+          signup: $("#signup", context),
+          display_login: $('a.login', context),
+          display_signup: $('a.signup', context)
+        }
+    
+        new RegistrationModal().init(selectors);
+      };
+    </script>
+
+    <div data-html2canvas-ignore="true" id="report-problem-model" class="modal col m6 offset-m3 s10 offset-s1">
+      <div class="right">
+        <a id="hide-report-problem-model" href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#">
+          <i class="fa fa-times"></i>
+        </a>
+      </div>
+      <div class="">
+        <h1 class="center">😺</h1>
+        <h2>Have some feedback for us? Please tell us what's happening so we can improve Katacoda.</h2>
+        <div class="">
+          <textarea name="name" id="feedback-contents" rows="16" cols="80"></textarea>
+        </div>
+        <div class="">
+          <input type="checkbox" name="screenshot" value="screenshot" id="screenshot"><label for="screenshot">Send HTML Canvas as Screenshot. This will help us debug potential issues.</label>
+        </div>
+        <div class="">
+          <button type="button" name="button" class="btn small-btn primary-btn center">Send Feedback</button>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="debug-model" class="modal">
+      <div class="modal-content">
+        <h4>Debug Information</h4>
+        <p id="debug-info"><p>Content Version: </p><p>Last Updated: </p><p>Connected - Katacoda Host: cykoria02</p><p>host0 IP: 172.17.0.30<br>client1 IP: 172.17.0.41<br></p></p>
+      </div>
+      <div class="modal-footer">
+        <a href="https://www.katacoda.com/courses/docker/create-nginx-static-web-server#!" class="modal-action modal-close waves-effect waves-green btn-flat">OK</a>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="./index_files/materialize.min.js.download"></script>
+    <script type="text/javascript" src="./index_files/handlebars.runtime-v4.0.5.js.download"></script>
+    <script type="text/javascript" src="./index_files/templates.js.download"></script>
+
+    <script type="text/javascript" src="./index_files/application.js.download"></script>
+    <script type="text/javascript" src="./index_files/api.js.download" async="" defer=""></script>
+    <script type="text/javascript" src="./index_files/html2canvas.js.download" async="" defer=""></script>
+
+
+
+    <script type="text/javascript">
+
+      var app;
+      $(document).ready(function() {
+        app = new App();
+        
+        app.init();
+        app.stripe = {
+          publish_key: 'pk_live_fGt75qCtGfvQn73mpo5YCwca'
+        }
+
+
+      });
+
+      var reportProblem = $("#report-problem");
+      var reportProblemModal = $('#report-problem-model');
+      reportProblem.click(function() {
+        reportProblemModal.modal({dismissible: true, opacity: .8, top: '5%'}).modal('open');
+      });
+
+      $("#hide-report-problem-model", reportProblemModal).click(function() {
+        reportProblemModal.modal('close');
+      });
+      $("button", reportProblemModal).click(function() {
+        var b = $(this);
+        if(b.text() === "Sending...")
+          return;
+
+        
+        var feedback = $("#feedback-contents", reportProblemModal).val();
+        if(feedback === "")
+          return;
+
+        b.text("Sending...");
+        var includeScreenshot = $("#screenshot", reportProblemModal);
+        if(includeScreenshot.is(':checked')) {
+          screenshot(function(err, jpg) {
+            $.ajax({
+              url: 'feedback',
+              type: 'POST',
+              data: {screenshot: jpg, feedback: feedback, url: window.location.href, host:window.katacodaHost},
+              success: function() {
+                reportProblemModal.modal('close');
+                $("#feedback-contents", reportProblemModal).val("");
+                b.text("Send");
+                window.show_confirmation("Thank you for your feedback!");
+              },
+              error: function() {
+                $.ajax({
+                  url: 'feedback',
+                  type: 'POST',
+                  data: {feedback: feedback, url: window.location.href, host:window.katacodaHost},
+                  success: function() {
+                    reportProblemModal.modal('close');
+                    $("#feedback-contents", reportProblemModal).val("");
+                    b.text("Send");
+                    window.show_confirmation("Thank you for your feedback!");
+                  }
+                })
+              }
+            })
+          })
+        } else {
+          $.ajax({
+            url: 'feedback',
+            type: 'POST',
+            data: {feedback: feedback, url: window.location.href},
+            success: function() {
+              reportProblemModal.modal('close');
+              $("#feedback-contents", reportProblemModal).val("");
+              b.text("Send");
+              window.show_confirmation("Thank you for your feedback!");
+            }
+          })
+        }
+      });
+
+      var screenshot = function(cb) {
+        $("#finished").addClass('hidden');
+        html2canvas(document.body, {
+          onrendered: function(canvas) {
+            $("#finished").addClass('hidden');
+            var jpg = canvas.toDataURL("image/png");
+            cb(null, jpg);
+          }
+        });
+      }
+      
+      window._csrf = 'ikCbUj6k-clOKktWmLV-Zqd1uCJqZ6H_pymU';
+      window.on_application_load = function(app) {
+        if (window.trackJs) {
+          trackJs.addMetadata("host", 'cykoria02');
+          trackJs.addMetadata("deployment", 'katacoda');
+        }
+        window.originalPathwayId = '';
+
+        modal_init();
+
+        if(typeof mermaid !== 'undefined' && mermaid.initialize){ 
+          mermaid.initialize({
+              startOnLoad:true,
+              flowchart: { 
+                curve: 'basis' 
+              }
+          });  
+        }
+      }
+    </script>
+  
+
+</section><div class="sidenav-overlay" style="display: none;"></div><div class="drag-target"></div><div class="material-tooltip" id="0Iksn2fuR6WbZH2qh0"><span>Close Tree</span><div class="backdrop"></div></div><div class="material-tooltip" id="AQKWWbXmPIELpTwAkH"><span>Refresh Tree</span><div class="backdrop"></div></div><div class="material-tooltip" id="qd9ZMR7MtQfHmYWYea"><span>Expand All</span><div class="backdrop"></div></div><div class="material-tooltip" id="UuqsMwvVGEaGohUwg0"><span>Collapse All</span><div class="backdrop"></div></div><div class="material-tooltip" id="KaIouH92PdM0AsZepg"><span>Web Preview</span><div class="backdrop"></div></div><div class="material-tooltip" id="IjJkznffkozsbEGFX0"><span>Shutdown Cluster</span><div class="backdrop"></div></div><div class="material-tooltip" id="xzuQC8SyQJAwb555gQ"><span>Report Problem / Give Feedback</span><div class="backdrop"></div></div><div class="material-tooltip" id="WkTT331uA9P96KsQrW"><span>Fullscreen</span><div class="backdrop"></div></div><div class="material-tooltip" id="JzRyz9IoL9GXy6NTNb"><span>Settings</span><div class="backdrop"></div></div><div style="background-color: rgb(255, 255, 255); border: 1px solid rgb(204, 204, 204); box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 3px; position: absolute; transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s; opacity: 0; visibility: hidden; z-index: 2000000000; left: 0px; top: -10000px;"><div style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0.05;"></div><div class="g-recaptcha-bubble-arrow" style="border: 11px solid transparent; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000;"></div><div class="g-recaptcha-bubble-arrow" style="border: 10px solid transparent; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000;"></div><div style="z-index: 2000000000; position: relative;"><iframe title="recaptcha challenge" src="./index_files/bframe.html" name="c-krn87rsbl8gq" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox" style="width: 100%; height: 100%;"></iframe></div></div><div style="background-color: rgb(255, 255, 255); border: 1px solid rgb(204, 204, 204); box-shadow: rgba(0, 0, 0, 0.2) 2px 2px 3px; position: absolute; transition: visibility 0s linear 0.3s, opacity 0.3s linear 0s; opacity: 0; visibility: hidden; z-index: 2000000000; left: 0px; top: -10000px;"><div style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0.05;"></div><div class="g-recaptcha-bubble-arrow" style="border: 11px solid transparent; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000;"></div><div class="g-recaptcha-bubble-arrow" style="border: 10px solid transparent; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000;"></div><div style="z-index: 2000000000; position: relative;"><iframe title="recaptcha challenge" src="./index_files/bframe(1).html" name="c-e9urdco1q5ai" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox" style="width: 100%; height: 100%;"></iframe></div></div></body></html>
