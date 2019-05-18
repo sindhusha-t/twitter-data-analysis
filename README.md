@@ -23,5 +23,6 @@ Output from scala: https://github.com/sindhusha-t/twitter-data-analysis/tree/mas
 https://github.com/sindhusha-t/twitter-data-analysis/wiki/Interim-project-report
 
 ### Phase 2 Report Wiki Link:
+https://github.com/sindhusha-t/twitter-data-analysis/blob/master/COLLECTING%20TWEETS%20USING%20TWITTER%20STREAMING%20API-converted.pdf
 
 ### Final Report Link:
